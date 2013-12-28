@@ -24,6 +24,8 @@ void curvedLine::setup(){
     
     prevPosition = c.getGlobalPosition();
     
+    matchCount = 0;
+    
 }
 
 
@@ -31,12 +33,18 @@ void curvedLine::translateNodeLine( ofPoint trans){
     
     //trans.z = -1;
     for (int i = 0; i < nodeLine.size(); i++){
-        nodeLine[i] += trans;
+        nodeLine[i] += trans * 2.0 * timeStep;
+    }
+    
+    
+    for (int i = 0; i < nodeLineForMatch.size(); i++){
+        nodeLineForMatch[i] += trans * 2.0*timeStep;
     }
 }
 
 
 void curvedLine::update(){
+    
     
     
     timeAccumulator += timeStep;
@@ -77,15 +85,21 @@ void curvedLine::update(){
         }
     }
     
-//    if (nodeLine.size() > 0){
-//        ofPoint pt = nodeLine[nodeLine.size()-1];
-//        if ((pt - c.getGlobalPosition()).length() > 3){
-//            nodeLine.addVertex(c.getGlobalPosition());
-//
-//        }
-//    } else {
-        nodeLine.addVertex(c.getGlobalPosition());
-    //}
+    nodeLine.addVertex(c.getGlobalPosition());
+    
+    if (nodeLineForMatch.size() > 0){
+        ofPoint pt = nodeLineForMatch[nodeLineForMatch.size()-1];
+        if ((pt - c.getGlobalPosition()).length() > 1){
+            nodeLineForMatch.addVertex(c.getGlobalPosition());
+            matchCount++;
+        }
+    } else {
+        nodeLineForMatch.addVertex(c.getGlobalPosition());
+    }
+    
+    if (nodeLineForMatch.size() > 101){
+        nodeLineForMatch.getVertices().erase(nodeLineForMatch.getVertices().begin());
+    }
     
     if (nodeLine.size() > 1000){
         nodeLine.getVertices().erase(nodeLine.getVertices().begin());

@@ -29,4 +29,9 @@ public:
     float time;
     
     ofPolyline nodeLine;
+    
+    int matchCount;
+    
+    ofPolyline nodeLineForMatch;
+
 };

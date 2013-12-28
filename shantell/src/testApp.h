@@ -45,4 +45,9 @@ class testApp : public ofBaseApp{
         ofShader shader;
         float angleCatch;
     
+        float matchEnergy;
+        ofPoint catchPt;
+    
+    
+    
 };

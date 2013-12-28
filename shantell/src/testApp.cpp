@@ -66,12 +66,42 @@ void testApp::setup(){
     shader.load("shader/shader");
     
     angleCatch = 0;
+    matchEnergy = 0;
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
     
-    if (ofGetFrameNum() % 30 == 0)shader.load("shader/shader");
+    //if (ofGetFrameNum() % 30 == 0)shader.load("shader/shader");
+    
+    //matchEnergy
+    
+    if (ofGetElapsedTimef()- lastMatchTime > 1.0){
+        matchEnergy = 0.95f * matchEnergy + 0.05 * 0.0;
+    } else {
+        matchEnergy = 0.95f * matchEnergy + 0.05 * 1.0;
+    }
+    
+    if (CL.nodeLine.size() > 0){
+        if (ofGetElapsedTimef()- lastMatchTime > 3.0){
+            catchPt = 0.97f * catchPt + 0.03 * CL.nodeLine[CL.nodeLine.size()-1];;
+        } else {
+            if (matchStructs.size() > 0){
+                catchPt = 0.99f * catchPt + 0.01 * (matchStructs[matchStructs.size()-1].matchA + matchStructs[matchStructs.size()-1].matchB)/2.0;
+            } else {
+                catchPt = 0.97f * catchPt + 0.03 * CL.nodeLine[CL.nodeLine.size()-1];;
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    CL.timeStep = ofMap(matchEnergy, 0, 1, 0.5, 0.01, true);
+    
+    
+    
     
     TIME_SAMPLE_START("update");
     
@@ -80,28 +110,35 @@ void testApp::update(){
     
     if (ofGetMousePressed()){
         
+        
+        ofPoint trans(ofPoint(-2, 0));
+        //trans * 2.0*timeStep;
+
         CL.translateNodeLine(ofPoint(-1, 0));
         
         for (int i = 0; i < matchStructs.size(); i++){
-            matchStructs[i].matchA.x -= 1.0;
-            matchStructs[i].matchB.x -= 1.0;
-            matchStructs[i].offset.x -= 1.0;
+            matchStructs[i].matchA += trans * 2.0* CL.timeStep;
+            matchStructs[i].matchB += trans * 2.0*CL.timeStep;
+            matchStructs[i].offset += trans * 2.0*CL.timeStep;
         }
     
     } else {
         
+        ofPoint trans(ofPoint(-1, 0));
         CL.translateNodeLine(ofPoint(-1, 0));
         
         for (int i = 0; i < matchStructs.size(); i++){
-            matchStructs[i].matchA.x -= 1.0;
-            matchStructs[i].matchB.x -= 1.0;
-            matchStructs[i].offset.x -= 1.0;
+            matchStructs[i].matchA += trans * 2.0*CL.timeStep;
+            matchStructs[i].matchB += trans * 2.0*CL.timeStep;
+            matchStructs[i].offset += trans * 2.0*CL.timeStep;
         }
 
         
     }
     
-    if (ofGetFrameNum() % 5 == 0 && CL.nodeLine.size() > 100){
+    cout << CL.nodeLineForMatch.size() << endl;
+    //ofGetElapsedTimef()- lastMatchTime > 3.0
+    if (CL.matchCount % 10 == 0 && CL.nodeLineForMatch.size() > 100){
         
         
         TIME_SAMPLE_START("match");
@@ -115,8 +152,10 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::lookForGoodMatch(){
     nodeLineLast100.clear();
-    for (int i = CL.nodeLine.size()-100; i < CL.nodeLine.size(); i++){
-        nodeLineLast100.addVertex(CL.nodeLine[i]);
+    for (int i = CL.nodeLineForMatch.size()-100; i < CL.nodeLineForMatch.size(); i++){
+        nodeLineLast100.addVertex(CL.nodeLineForMatch[i]);
+        //cout << CL.nodeLineForMatch[i] << endl;
+        
     }
     nodeLine40 = nodeLineLast100.getResampledByCount(40);
     nodeLine40 = returnNormalizedLine(nodeLine40);
@@ -150,7 +189,7 @@ void testApp::lookForGoodMatch(){
     //ofSort(polyPtrs, sortFuncPP);
     //ofSort(distanceResults, sortFunc);
     
-    cout << sqrt(polyPtrs[0].distance) << endl;
+    //cout << sqrt(polyPtrs[0].distance) << endl;
     
     if (sqrt(polyPtrs[0].distance) < 10){
         
@@ -197,7 +236,7 @@ void testApp::draw(){
     
     if (CL.nodeLine.size()> 0){
         
-    ofPoint pt = CL.nodeLine[CL.nodeLine.size()-1];
+    ofPoint pt = catchPt;
     ofMatrix4x4 mat;
     ofMatrix4x4 t1;
     ofMatrix4x4 t2;
@@ -241,6 +280,8 @@ void testApp::draw(){
 //        ofRect(temp[i].x, temp[i].y, 2,2);
 //    }
     CL.nodeLine.draw();
+    //CL.nodeLineForMatch.draw();
+    
     
 //    for (int i = 0; i < CL.nodeLine.size()-1; i++){
 //        
@@ -291,7 +332,12 @@ void testApp::draw(){
 	
 	TIME_SAMPLE_DRAW( 10, 10); 	//finally draw our time measurements
 
-
+    
+    ofTranslate(mouseX, mouseY);
+    
+    //nodeLine40.draw();
+    //nodeLineLast100.draw();
+    
 }
 
 //--------------------------------------------------------------
