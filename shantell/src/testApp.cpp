@@ -87,7 +87,12 @@ void testApp::update(){
             catchPt = 0.97f * catchPt + 0.03 * CL.nodeLine[CL.nodeLine.size()-1];;
         } else {
             if (matchStructs.size() > 0){
-                catchPt = 0.99f * catchPt + 0.01 * (matchStructs[matchStructs.size()-1].matchA + matchStructs[matchStructs.size()-1].matchB)/2.0;
+                
+                float pct = ((ofGetElapsedTimef()- lastMatchTime) / 3.0);
+                float val = sin (pct * PI);
+                
+                ofPoint ptToCatch = val * (matchStructs[matchStructs.size()-1].matchA + matchStructs[matchStructs.size()-1].matchB)/2.0 + (1-val) * CL.nodeLine[CL.nodeLine.size()-1];
+                catchPt = 0.97f * catchPt + 0.03 * ptToCatch;
             } else {
                 catchPt = 0.97f * catchPt + 0.03 * CL.nodeLine[CL.nodeLine.size()-1];;
             }
