@@ -67,6 +67,7 @@ void testApp::setup(){
     
     angleCatch = 0;
     matchEnergy = 0;
+     scale = 1;
 }
 
 //--------------------------------------------------------------
@@ -76,6 +77,9 @@ void testApp::update(){
     
     //matchEnergy
     
+   
+    
+    
     if (ofGetElapsedTimef()- lastMatchTime > 1.0){
         matchEnergy = 0.95f * matchEnergy + 0.05 * 0.0;
     } else {
@@ -84,6 +88,8 @@ void testApp::update(){
     
     if (CL.nodeLine.size() > 0){
         if (ofGetElapsedTimef()- lastMatchTime > 3.0){
+            
+            scale = 0.99 * scale + 0.01 * 1.0;
             catchPt = 0.97f * catchPt + 0.03 * CL.nodeLine[CL.nodeLine.size()-1];;
         } else {
             if (matchStructs.size() > 0){
@@ -91,13 +97,34 @@ void testApp::update(){
                 float pct = ((ofGetElapsedTimef()- lastMatchTime) / 3.0);
                 float val = sin (pct * PI);
                 
+                
+                
+                ofRectangle origRect = matchStructs[matchStructs.size()-1].bounds;
+                
+                if (origRect.width > 0){
+                ofRectangle screenRect = ofRectangle(0,0, ofGetWidth(), ofGetHeight());
+                ofRectangle tranRect = origRect;
+                tranRect.scaleTo(screenRect);
+                
+                
+                float scaleTarget =  tranRect.width / origRect.width;
+                    
+                    scaleTarget = 0.2 * scaleTarget + 0.8 * 1.0;
+                
+                scale = 0.99 * scale + 0.01 * scaleTarget;
+                }
+                
                 ofPoint ptToCatch = val * (matchStructs[matchStructs.size()-1].matchA + matchStructs[matchStructs.size()-1].matchB)/2.0 + (1-val) * CL.nodeLine[CL.nodeLine.size()-1];
                 catchPt = 0.97f * catchPt + 0.03 * ptToCatch;
             } else {
+                //scale = 0.97 * scale + 0.03 * 1.0;
                 catchPt = 0.97f * catchPt + 0.03 * CL.nodeLine[CL.nodeLine.size()-1];;
             }
         }
     }
+    
+    
+    cout << scale << endl;
     
     
     
@@ -143,7 +170,7 @@ void testApp::update(){
     
     cout << CL.nodeLineForMatch.size() << endl;
     //ofGetElapsedTimef()- lastMatchTime > 3.0
-    if (CL.matchCount % 10 == 0 && CL.nodeLineForMatch.size() > 100){
+    if (CL.matchCount % 5 == 0 && CL.nodeLineForMatch.size() > 100){
         
         
         TIME_SAMPLE_START("match");
@@ -196,7 +223,7 @@ void testApp::lookForGoodMatch(){
     
     //cout << sqrt(polyPtrs[0].distance) << endl;
     
-    if (sqrt(polyPtrs[0].distance) < 10){
+    if (sqrt(polyPtrs[0].distance) < 12){
         
         if (ofGetElapsedTimef()- lastMatchTime > 3.0){
             matchStruct match;
@@ -214,7 +241,7 @@ void testApp::lookForGoodMatch(){
             if (matchStructs.size() > 8) matchStructs.erase(matchStructs.begin());
             
             lastFound.push_back(polyPtrs[0].whichLine);
-            if (lastFound.size() > 10) lastFound.erase(lastFound.begin());
+            if (lastFound.size() > 30) lastFound.erase(lastFound.begin());
             
             lastMatchTime = ofGetElapsedTimef();
         }
@@ -237,14 +264,16 @@ void testApp::draw(){
     
     shader.begin();
     
-    
-    
+
     if (CL.nodeLine.size()> 0){
         
     ofPoint pt = catchPt;
     ofMatrix4x4 mat;
     ofMatrix4x4 t1;
     ofMatrix4x4 t2;
+        
+        ofMatrix4x4 scaleMatrix;
+        scaleMatrix.makeScaleMatrix(ofPoint(scale, scale, scale));
     t1.makeTranslationMatrix( -pt);
     t2.makeTranslationMatrix( ofPoint(ofGetWidth()/2, ofGetHeight()/2));
     ofMatrix4x4 res;
@@ -261,7 +290,7 @@ void testApp::draw(){
         
     mat.makeRotationMatrix(-angleCatch, 0, 0, 1);
     
-    res = t1 * mat * t2;
+    res = t1 * mat * scaleMatrix * t2;
     
     shader.setUniformMatrix4f("matrix", res);
     } else {
@@ -429,15 +458,19 @@ void testApp::drawLineSet(lineSet & set, matchStruct & match, ofPoint ptA, ofPoi
             if (count < nCountTo){
                 mesh.addVertex(newPt + match.offset);
                 
-                if (i > 0){
-                    if (i == 1 && j == 0) {
-                        match.bounds.set((newPt + match.offset).x, (newPt + match.offset).y, 1,1);
-                    } else {
-                        match.bounds.growToInclude(newPt + match.offset);
-                        
-                    }
+                
+            }
+            
+            
+            if (i > 0){
+                if (i == 1 && j == 0) {
+                    match.bounds.set((newPt + match.offset).x, (newPt + match.offset).y, 1,1);
+                } else {
+                    match.bounds.growToInclude(newPt + match.offset);
+                    
                 }
             }
+            
             count++;
         }
         

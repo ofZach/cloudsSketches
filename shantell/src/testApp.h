@@ -47,6 +47,8 @@ class testApp : public ofBaseApp{
     
         float matchEnergy;
         ofPoint catchPt;
+        float scale;
+    
     
     
     
