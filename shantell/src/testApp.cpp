@@ -272,8 +272,8 @@ void testApp::draw(){
     ofMatrix4x4 t1;
     ofMatrix4x4 t2;
         
-        ofMatrix4x4 scaleMatrix;
-        scaleMatrix.makeScaleMatrix(ofPoint(scale, scale, scale));
+    ofMatrix4x4 scaleMatrix;
+    scaleMatrix.makeScaleMatrix(ofPoint(scale, scale, scale));
     t1.makeTranslationMatrix( -pt);
     t2.makeTranslationMatrix( ofPoint(ofGetWidth()/2, ofGetHeight()/2));
     ofMatrix4x4 res;
@@ -286,7 +286,7 @@ void testApp::draw(){
         }
         
         
-        angleCatch = ofLerpDegrees(angleCatch, angle, 0.01);
+        angleCatch = ofLerpDegrees(angleCatch, angle, 0.003);
         
     mat.makeRotationMatrix(-angleCatch, 0, 0, 1);
     
