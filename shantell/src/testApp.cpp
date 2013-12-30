@@ -67,7 +67,23 @@ void testApp::setup(){
     
     angleCatch = 0;
     matchEnergy = 0;
-     scale = 1;
+    scale = 1;
+    
+    ofFbo::Settings settings;
+    settings.useStencil = true;
+    settings.height = 768;
+    settings.width = 1024;
+    settings.internalformat = GL_RGBA;
+    settings.numSamples = 2;
+    fbo.allocate(settings);
+    
+    _defaultRenderer = ofGetCurrentRenderer();
+    _shivaVGRenderer = ofPtr<ofxShivaVGRenderer>(new ofxShivaVGRenderer);
+    ofSetCurrentRenderer(_shivaVGRenderer);
+    
+    _shivaVGRenderer->setLineJoinStyle(VG_JOIN_ROUND);
+    _shivaVGRenderer->setLineCapStyle(VG_CAP_ROUND);
+
 }
 
 //--------------------------------------------------------------
@@ -257,6 +273,10 @@ void testApp::draw(){
 
     //return;
     
+    ofSetCurrentRenderer(_shivaVGRenderer);
+    
+    ofSetLineWidth(2.4f);
+    fbo.begin();
     
     
 
@@ -328,12 +348,12 @@ void testApp::draw(){
 //    }
     
     
-    
+    ofSetLineWidth(2.15f);
     for (int i = 0; i < matchStructs.size(); i++){
         
         //cout << matchStructs[i].offset << endl;
         //if (matchStructs[i].offset.x < -400) continue;
-
+        
         drawLineSet( lineSets[matchStructs[i].idOfMatch],matchStructs[i], matchStructs[i].matchA, matchStructs[i].matchB);
 
         ofNoFill();
@@ -364,10 +384,22 @@ void testApp::draw(){
     
     TIME_SAMPLE_STOP("draw"); /////////////////////////////////////////////////  STOP MEASURING  ///
 	
+    fbo.end();
+    
+    
+    ofSetCurrentRenderer(_defaultRenderer);
+    
+    ofSetColor(255,255,255);
+    fbo.draw(0,0);
+    
+    
 	TIME_SAMPLE_DRAW( 10, 10); 	//finally draw our time measurements
 
     
-    ofTranslate(mouseX, mouseY);
+    //ofTranslate(mouseX, mouseY);
+    
+    
+    
     
     //nodeLine40.draw();
     //nodeLineLast100.draw();
@@ -448,15 +480,15 @@ void testApp::drawLineSet(lineSet & set, matchStruct & match, ofPoint ptA, ofPoi
         if (i == 0)  ofGetMousePressed() == false ? ofSetColor(255,255,255,0) : ofSetColor(ofColor::cyan);
         else ofSetColor(ofColor::white);
         
-        
-        ofMesh mesh;
-        mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+        ofPolyline line;
+        //ofMesh mesh;
+        //mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
         for (int j = 0; j < set.normalizeLines[i].size(); j++){
             
             ofPoint newPt = set.normalizeLines[i][j] * rotate * inverse2 * inverse;
             
             if (count < nCountTo){
-                mesh.addVertex(newPt + match.offset);
+                line.addVertex(newPt + match.offset);
                 
                 
             }
@@ -478,7 +510,7 @@ void testApp::drawLineSet(lineSet & set, matchStruct & match, ofPoint ptA, ofPoi
         ofRectangle rect(0,0,ofGetWidth(), ofGetHeight());
         if (rect.intersects( match.bounds)){
             //cout << match.bounds << endl;
-            mesh.draw();
+            line.draw();
         }
     }
 }

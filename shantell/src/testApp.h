@@ -5,6 +5,7 @@
 #include "curvedLine.h"
 #include "lineMatchUtils.h"
 #include "ofxTimeMeasurements.h"
+#include "ofxShivaVGRenderer.h"
 
 
 class testApp : public ofBaseApp{
@@ -49,7 +50,9 @@ class testApp : public ofBaseApp{
         ofPoint catchPt;
         float scale;
     
-    
+         ofFbo fbo;
+    ofPtr<ofBaseRenderer> _defaultRenderer;
+    ofPtr<ofxShivaVGRenderer> _shivaVGRenderer;
     
     
 };
