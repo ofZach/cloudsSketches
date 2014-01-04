@@ -1,7 +1,7 @@
 #include "testApp.h"
 #include "iostream.h"
 
-#define NROT 180
+#define NROT 120
 
 
 
@@ -13,6 +13,7 @@ void testApp::setup(){
     dir.listDir("output");
     for (int i = 0; i < dir.size(); i++){
         string fileName = dir.getPath(i);
+        
         lineSets.push_back( linesetFromFile(fileName) );
         lineSets[lineSets.size()-1].idMe = i;
         
@@ -102,6 +103,9 @@ void testApp::update(){
         matchEnergy = 0.95f * matchEnergy + 0.05 * 1.0;
     }
     
+    
+    cout << scale << endl;
+    
     if (CL.nodeLine.size() > 0){
         if (ofGetElapsedTimef()- lastMatchTime > 3.0){
             
@@ -140,8 +144,7 @@ void testApp::update(){
     }
     
     
-    cout << scale << endl;
-    
+   
     
     
     
@@ -184,9 +187,8 @@ void testApp::update(){
         
     }
     
-    cout << CL.nodeLineForMatch.size() << endl;
     //ofGetElapsedTimef()- lastMatchTime > 3.0
-    if (CL.matchCount % 5 == 0 && CL.nodeLineForMatch.size() > 100){
+    if (CL.matchCount % 10 == 0 && CL.nodeLineForMatch.size() > 100){
         
         
         TIME_SAMPLE_START("match");
@@ -239,7 +241,7 @@ void testApp::lookForGoodMatch(){
     
     //cout << sqrt(polyPtrs[0].distance) << endl;
     
-    if (sqrt(polyPtrs[0].distance) < 12){
+    if (sqrt(polyPtrs[0].distance) < 11){
         
         if (ofGetElapsedTimef()- lastMatchTime > 3.0){
             matchStruct match;
@@ -257,7 +259,7 @@ void testApp::lookForGoodMatch(){
             if (matchStructs.size() > 8) matchStructs.erase(matchStructs.begin());
             
             lastFound.push_back(polyPtrs[0].whichLine);
-            if (lastFound.size() > 30) lastFound.erase(lastFound.begin());
+            if (lastFound.size() > 80) lastFound.erase(lastFound.begin());
             
             lastMatchTime = ofGetElapsedTimef();
         }
@@ -275,7 +277,8 @@ void testApp::draw(){
     
     ofSetCurrentRenderer(_shivaVGRenderer);
     
-    ofSetLineWidth(2.4f);
+    //
+    ofSetLineWidth(3.4f); //- ofMap(scale, 0,3, 0, 1, true));
     fbo.begin();
     
     
@@ -348,7 +351,7 @@ void testApp::draw(){
 //    }
     
     
-    ofSetLineWidth(2.15f);
+    ofSetLineWidth( 1.7);// - ofMap(scale, 0,3, 0, 0.4, true));
     for (int i = 0; i < matchStructs.size(); i++){
         
         //cout << matchStructs[i].offset << endl;
