@@ -104,7 +104,7 @@ void testApp::update(){
     }
     
     
-    cout << scale << endl;
+    //cout << scale << endl;
     
     if (CL.nodeLine.size() > 0){
         if (ofGetElapsedTimef()- lastMatchTime > 3.0){
@@ -470,7 +470,7 @@ void testApp::drawLineSet(lineSet & set, matchStruct & match, ofPoint ptA, ofPoi
     }
     
     int nCountTo = nTotal * pct;
-    cout << nCountTo << endl;
+    //cout << nCountTo << endl;
     int count = 0;
     
     //match.bounds.set( match.offset.x, match.offset.y, 1,1);
