@@ -470,7 +470,7 @@ void testApp::drawLineSet(lineSet & set, matchStruct & match, ofPoint ptA, ofPoi
     }
     
     int nCountTo = nTotal * pct;
-    
+    cout << nCountTo << endl;
     int count = 0;
     
     //match.bounds.set( match.offset.x, match.offset.y, 1,1);
@@ -509,15 +509,16 @@ void testApp::drawLineSet(lineSet & set, matchStruct & match, ofPoint ptA, ofPoi
             count++;
         }
         
-        
-        ofRectangle rect(0,0,ofGetWidth(), ofGetHeight());
-        if (rect.intersects( match.bounds)){
-            //cout << match.bounds << endl;
-            line.draw();
+        if (line.getVertices().size() > 0){
+            
+            ofRectangle rect(0,0,ofGetWidth(), ofGetHeight());
+            if (rect.intersects( match.bounds)){
+                //cout << match.bounds << endl;
+                line.draw();
+            }
         }
     }
 }
-
 //--------------------------------------------------------------
 lineSet & testApp::linesetFromFile( string fileName ){
     
