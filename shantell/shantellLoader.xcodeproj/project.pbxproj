@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		92910A8B1882DDA900DC318E /* brushedLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92910A891882DDA900DC318E /* brushedLine.cpp */; };
 		92914CE3186C780100D8B6D4 /* curvedLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92914CE1186C780100D8B6D4 /* curvedLine.cpp */; };
 		92914CE6186CDC2600D8B6D4 /* lineMatchUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 92914CE5186CDC2600D8B6D4 /* lineMatchUtils.c */; };
 		92914CEA186CDF7B00D8B6D4 /* ofxTimeMeasurements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92914CE8186CDF7B00D8B6D4 /* ofxTimeMeasurements.cpp */; };
@@ -80,6 +81,8 @@
 
 /* Begin PBXFileReference section */
 		927F58151847338F00C4F555 /* statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = statistics.h; sourceTree = "<group>"; };
+		92910A891882DDA900DC318E /* brushedLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = brushedLine.cpp; sourceTree = "<group>"; };
+		92910A8A1882DDA900DC318E /* brushedLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = brushedLine.h; sourceTree = "<group>"; };
 		92914CE1186C780100D8B6D4 /* curvedLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = curvedLine.cpp; sourceTree = "<group>"; };
 		92914CE2186C780100D8B6D4 /* curvedLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curvedLine.h; sourceTree = "<group>"; };
 		92914CE4186CDBD200D8B6D4 /* lineMatchUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lineMatchUtils.h; sourceTree = "<group>"; };
@@ -361,6 +364,8 @@
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
+				92910A891882DDA900DC318E /* brushedLine.cpp */,
+				92910A8A1882DDA900DC318E /* brushedLine.h */,
 				92914CE4186CDBD200D8B6D4 /* lineMatchUtils.h */,
 				92914CE5186CDC2600D8B6D4 /* lineMatchUtils.c */,
 				92914CE1186C780100D8B6D4 /* curvedLine.cpp */,
@@ -474,6 +479,7 @@
 				92914DD11871A9B700D8B6D4 /* shPath.c in Sources */,
 				92914DCB1871A9B700D8B6D4 /* shContext.c in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */,
+				92910A8B1882DDA900DC318E /* brushedLine.cpp in Sources */,
 				92914CEA186CDF7B00D8B6D4 /* ofxTimeMeasurements.cpp in Sources */,
 				92914CF9186DDCDF00D8B6D4 /* shader.vert in Sources */,
 				92914DD51871A9B700D8B6D4 /* ofxShivaVGRenderer.cpp in Sources */,

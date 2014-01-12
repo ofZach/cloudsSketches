@@ -5,7 +5,7 @@
 #include "curvedLine.h"
 #include "lineMatchUtils.h"
 #include "ofxTimeMeasurements.h"
-#include "ofxShivaVGRenderer.h"
+#include "brushedLine.h"
 
 
 class testApp : public ofBaseApp{
@@ -51,8 +51,9 @@ class testApp : public ofBaseApp{
         float scale;
     
          ofFbo fbo;
-    ofPtr<ofBaseRenderer> _defaultRenderer;
-    ofPtr<ofxShivaVGRenderer> _shivaVGRenderer;
+   // ofPtr<ofBaseRenderer> _defaultRenderer;
+   // ofPtr<ofxShivaVGRenderer> _shivaVGRenderer;
     
+        BrushedLine BL;
     
 };

@@ -8,7 +8,12 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 
+    
+    BL.img = new ofImage();
+    BL.img->loadImage("assets/spot.png");
+    
     ofDirectory dir;
+    
     
     dir.listDir("output");
     for (int i = 0; i < dir.size(); i++){
@@ -71,19 +76,19 @@ void testApp::setup(){
     scale = 1;
     
     ofFbo::Settings settings;
-    settings.useStencil = true;
-    settings.height = 768;
-    settings.width = 1024;
+    //settings.useStencil = true;
+    settings.height = 1080;
+    settings.width = 1920;
     settings.internalformat = GL_RGBA;
     settings.numSamples = 2;
     fbo.allocate(settings);
     
-    _defaultRenderer = ofGetCurrentRenderer();
-    _shivaVGRenderer = ofPtr<ofxShivaVGRenderer>(new ofxShivaVGRenderer);
-    ofSetCurrentRenderer(_shivaVGRenderer);
-    
-    _shivaVGRenderer->setLineJoinStyle(VG_JOIN_ROUND);
-    _shivaVGRenderer->setLineCapStyle(VG_CAP_ROUND);
+//    _defaultRenderer = ofGetCurrentRenderer();
+//    _shivaVGRenderer = ofPtr<ofxShivaVGRenderer>(new ofxShivaVGRenderer);
+//    ofSetCurrentRenderer(_shivaVGRenderer);
+//    
+//    _shivaVGRenderer->setLineJoinStyle(VG_JOIN_ROUND);
+//    _shivaVGRenderer->setLineCapStyle(VG_CAP_ROUND);
 
 }
 
@@ -104,7 +109,6 @@ void testApp::update(){
     }
     
     
-    //cout << scale << endl;
     
     if (CL.nodeLine.size() > 0){
         if (ofGetElapsedTimef()- lastMatchTime > 3.0){
@@ -122,7 +126,7 @@ void testApp::update(){
                 ofRectangle origRect = matchStructs[matchStructs.size()-1].bounds;
                 
                 if (origRect.width > 0){
-                ofRectangle screenRect = ofRectangle(0,0, ofGetWidth(), ofGetHeight());
+                ofRectangle screenRect = ofRectangle(0,0, 1920,1080);
                 ofRectangle tranRect = origRect;
                 tranRect.scaleTo(screenRect);
                 
@@ -273,20 +277,14 @@ void testApp::lookForGoodMatch(){
 //--------------------------------------------------------------
 void testApp::draw(){
 
-    //return;
-    
-    ofSetCurrentRenderer(_shivaVGRenderer);
-    
-    //
     ofSetLineWidth(3.4f); //- ofMap(scale, 0,3, 0, 1, true));
     fbo.begin();
-    
-    
 
     TIME_SAMPLE_START("draw");
     
     shader.begin();
     
+    //cout << ofGetWidth()     << endl;
 
     if (CL.nodeLine.size()> 0){
         
@@ -298,60 +296,30 @@ void testApp::draw(){
     ofMatrix4x4 scaleMatrix;
     scaleMatrix.makeScaleMatrix(ofPoint(scale, scale, scale));
     t1.makeTranslationMatrix( -pt);
-    t2.makeTranslationMatrix( ofPoint(ofGetWidth()/2, ofGetHeight()/2));
+    t2.makeTranslationMatrix( ofPoint(1920/2, 1080/2));
     ofMatrix4x4 res;
 
         float angle = 0;
         if (matchStructs.size() > 0){
             angle = (360 / NROT) * matchStructs[matchStructs.size()-1].bestAngle;
-            
-            //ofMatrix4x4 rotate; rotate.makeRotationMatrix( (360 / NROT) * match.bestAngle, 0, 0, 1 );
         }
-        
-        
         angleCatch = ofLerpDegrees(angleCatch, angle, 0.003);
-        
-    mat.makeRotationMatrix(-angleCatch, 0, 0, 1);
-    
-    res = t1 * mat * scaleMatrix * t2;
-    
-    shader.setUniformMatrix4f("matrix", res);
+        mat.makeRotationMatrix(-angleCatch, 0, 0, 1);
+        res = t1 * mat * scaleMatrix * t2;
+        shader.setUniformMatrix4f("matrix", res);
     } else {
-       // ofMatrix4x4 mat;
-        
-       //shader.setUniformMatrix
+
     }
     
     ofBackground(0);
     ofPushStyle();
-    //ofSetColor(ofColor::darkGrey);
+
+    //CL.nodeLine.draw();
+ 
+    BL.size = 1.5;
+    BL.drawPolyline(&CL.nodeLine);
     
-    //ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    //ofScale( 0.2, 0.2 );
-    
-    
-//    ofPolyline temp;
-//    temp =CL.nodeLine.getResampledBySpacing(8);
-//    
-//    for (int i = 0; i < temp.size(); i++){
-//        ofRect(temp[i].x, temp[i].y, 2,2);
-//    }
-    CL.nodeLine.draw();
-    //CL.nodeLineForMatch.draw();
-    
-    
-//    for (int i = 0; i < CL.nodeLine.size()-1; i++){
-//        
-//        if (i % 5 == 0){
-//         
-//            //ofPoint(CL.nodeLine[i]);
-//            ofPoint a(CL.nodeLine[i+1] - CL.nodeLine[i+1]);
-//            ofLine(CL.nodeLine[i], CL.nodeLine[i+1]);
-//        }
-//    }
-    
-    
-    ofSetLineWidth( 1.7);// - ofMap(scale, 0,3, 0, 0.4, true));
+    ofSetLineWidth( 3.0);// - ofMap(scale, 0,3, 0, 0.4, true));
     for (int i = 0; i < matchStructs.size(); i++){
         
         //cout << matchStructs[i].offset << endl;
@@ -360,7 +328,6 @@ void testApp::draw(){
         drawLineSet( lineSets[matchStructs[i].idOfMatch],matchStructs[i], matchStructs[i].matchA, matchStructs[i].matchB);
 
         ofNoFill();
-        //ofRect(matchStructs[i].bounds);
         
         
         ofSetColor(ofColor::pink);
@@ -390,10 +357,10 @@ void testApp::draw(){
     fbo.end();
     
     
-    ofSetCurrentRenderer(_defaultRenderer);
+    //ofSetCurrentRenderer(_defaultRenderer);
     
     ofSetColor(255,255,255);
-    fbo.draw(0,0);
+    fbo.draw(0,0, ofGetWidth(), ofGetHeight());
     
     
 	TIME_SAMPLE_DRAW( 10, 10); 	//finally draw our time measurements
@@ -470,7 +437,7 @@ void testApp::drawLineSet(lineSet & set, matchStruct & match, ofPoint ptA, ofPoi
     }
     
     int nCountTo = nTotal * pct;
-    //cout << nCountTo << endl;
+    cout << nCountTo << endl;
     int count = 0;
     
     //match.bounds.set( match.offset.x, match.offset.y, 1,1);
@@ -511,7 +478,7 @@ void testApp::drawLineSet(lineSet & set, matchStruct & match, ofPoint ptA, ofPoi
         
         if (line.getVertices().size() > 0){
             
-            ofRectangle rect(0,0,ofGetWidth(), ofGetHeight());
+            ofRectangle rect(0,0,1920,1080);
             if (rect.intersects( match.bounds)){
                 //cout << match.bounds << endl;
                 line.draw();
